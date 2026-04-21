@@ -1,15 +1,11 @@
 import React from "react";
 import TimerCircle from "../../../components/workout/TimerCircle";
-import WorkoutForm from "../../../components/workout/WorkoutForm";
-import Exercise from "../../../components/workout/Exercise";
 
 const page = () => {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <div className="flex flex-col h-screen items-center justify-center">
+      <main className="flex flex-col items-center justify-center h-full max-w-3xl py-10 sm:py-16 md:py-24 px-4 sm:px-8 md:px-">
         <TimerCircle />
-        {/* <WorkoutForm /> */}
-        {/* <Exercise /> */}
       </main>
     </div>
   );

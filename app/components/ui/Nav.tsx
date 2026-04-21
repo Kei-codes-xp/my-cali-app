@@ -50,7 +50,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <div className="sm:hidden fixed bottom-0 left-0 w-full bg-black text-white border-t border-gray-800 flex justify-around py-2">
+      <div className="sm:hidden fixed bottom-0 left-0 w-full bg-black text-white border-t border-gray-800 flex justify-evenly p-2">
         <NavItem icon={<FaHome />} label="Home" path="/home" />
         <NavItem icon={<FaDumbbell />} label="Workout" path="/workout" />
         <NavItem icon={<FaFire />} label="Progress" path="/progress" />

@@ -98,8 +98,8 @@ const TimerCircle = ({ duration = 10 }) => {
     }
   };
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <div className="mb-8 flex flex-col items-center justify-center w-full">
+    <div className="flex flex-col items-center justify-center gap-8">
+      <div className="absolute top-1 p-4">
         <svg className="w-full h-2">
           <rect
             x="0"
@@ -107,9 +107,8 @@ const TimerCircle = ({ duration = 10 }) => {
             width="100%"
             height="100%"
             rx="6"
-            className=" fill-[#2D2D2D]"
+            className="fill-[#2D2D2D]"
           />
-
           <rect
             x="0"
             y="0"
@@ -120,63 +119,81 @@ const TimerCircle = ({ duration = 10 }) => {
           />
         </svg>
       </div>
-      <div className="relative">
-        <div className=" w-full h-full flex flex-col items-center justify-center text-center">
-          <h1 className="text-3xl">{currentExercise.name}</h1>
-          <p className="text-lg">
+      <div className="flex flex-col items-center justify-center gap-8">
+        <div className="  text-center px-2">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold">
+            {currentExercise.name}
+          </h1>
+          <p className="text-sm sm:text-base text-gray-400">
             Set {currentSet} of {currentExercise.sets} • {currentExercise.reps}{" "}
             Reps
           </p>
         </div>
-        <svg viewBox="0 0 500 500" className="w-120 h-120 -rotate-90">
-          <circle
-            cx="250"
-            cy="250"
-            r={radius}
-            stroke="gray"
-            strokeWidth="8"
-            fill="transparent"
-            className="opacity-20"
-          />
+        {/* Progress bar */}
 
-          <circle
-            cx="250"
-            cy="250"
-            r={radius}
-            stroke="#22C55E"
-            strokeWidth="8"
-            fill="transparent"
-            strokeDasharray={circumference}
-            strokeDashoffset={progress}
-            strokeLinecap="round"
-            className="transition-all duration-100 linear"
-          />
-        </svg>
+        <div className="relative flex items-center justify-center">
+          {/* SVG Circle */}
+          <svg
+            viewBox="0 0 500 500"
+            className="w-64 h-64 sm:w-80 sm:h-80 md:w-400px md:h-400px -rotate-90"
+          >
+            <circle
+              cx="250"
+              cy="250"
+              r={radius}
+              stroke="gray"
+              strokeWidth="8"
+              fill="transparent"
+              className="opacity-20"
+            />
 
-        {/* Time text */}
-        <div className="absolute inset-0 flex items-center justify-center text-white text-6xl font-bold">
-          {formatTime(timeLeft)}
-        </div>
-        <div className="absolute inset-30 flex items-end justify-center text-6xl font-bold">
+            <circle
+              cx="250"
+              cy="250"
+              r={radius}
+              stroke="#22C55E"
+              strokeWidth="8"
+              fill="transparent"
+              strokeDasharray={circumference}
+              strokeDashoffset={progress}
+              strokeLinecap="round"
+              className="transition-all duration-100 linear"
+            />
+          </svg>
+
+          {/* Time */}
+          <div className="absolute inset-0 flex items-center justify-center text-white text-3xl sm:text-5xl md:text-6xl font-bold">
+            {formatTime(timeLeft)}
+          </div>
+
+          {/* REST label */}
           {isRunning && (
-            <span className="text-3xl font-medium text-[#22C55E]">REST</span>
+            <div className="absolute bottom-6 sm:bottom-10 text-[#22C55E] text-sm sm:text-lg font-medium">
+              REST
+            </div>
           )}
         </div>
-      </div>
 
-      <div className="w-full flex justify-center items-center pointer ">
-        <button
-          onClick={toggleTimer}
-          className="text-4xl p-8 rounded-full bg-[#22C55E] flex items-center justify-center"
-        >
-          {isRunning ? <FaPause /> : <FaPlay />}
-        </button>
-      </div>
-      <div className="flex flex-col items-center justify-center text-center w-full pt-8">
-        Exercise {currentIndex + 1} of {totalExercises}
-        <button onClick={resetTimer} style={{ marginLeft: "10px" }}>
-          Reset 🔄
-        </button>
+        {/* Controls */}
+        <div className="w-full flex justify-center mt-8">
+          <button
+            onClick={toggleTimer}
+            className="text-2xl sm:text-3xl p-5 sm:p-8 rounded-full bg-[#22C55E] flex items-center justify-center"
+          >
+            {isRunning ? <FaPause /> : <FaPlay />}
+          </button>
+        </div>
+
+        {/* Footer info */}
+        <div className="flex flex-col items-center justify-center text-center w-full pt-6 text-sm sm:text-base">
+          Exercise {currentIndex + 1} of {totalExercises}
+          <button
+            onClick={resetTimer}
+            className="mt-2 text-green-400 underline"
+          >
+            Reset 🔄
+          </button>
+        </div>
       </div>
     </div>
   );
