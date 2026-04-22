@@ -4,13 +4,18 @@ import { workouts } from "@/data/workouts";
 import { useEffect, useState, useRef } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { useParams } from "next/navigation";
+import { Workout } from "@/types/workout";
+import { saveWorkout } from "@/lib/firestore";
+import { useUser } from "@/hooks/useUser";
 
-const TimerCircle = ({ duration = 10 }) => {
+const TimerCircle = ({ duration = 120 }) => {
   const [timeLeft, setTimeLeft] = useState(duration);
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentSet, setCurrentSet] = useState(1);
+  const [progress, setProgress] = useState<Workout[]>([]);
+  const { user, loading } = useUser();
 
   useEffect(() => {
     if (!isRunning) return;
@@ -55,13 +60,12 @@ const TimerCircle = ({ duration = 10 }) => {
   const radius = 200;
   const circumference = 2 * Math.PI * radius;
 
-  const progress = (timeLeft / duration) * circumference;
+  const timeProgress = (timeLeft / duration) * circumference;
 
   const params = useParams();
   const level = params.level as string;
   const type = params.type as string;
 
-  console.log("Params:", params);
   if (!params?.level || !params?.type) {
     return <p>Loading route...</p>;
   }
@@ -81,6 +85,17 @@ const TimerCircle = ({ duration = 10 }) => {
 
     const totalSets = currentExercise.sets;
 
+    setProgress((prev) => {
+      const updated = [...prev];
+
+      updated[currentIndex] = {
+        ...updated[currentIndex],
+        completedSets: updated[currentIndex].completedSets + 1,
+      };
+
+      return updated;
+    });
+
     //  still have sets left
     if (currentSet < totalSets) {
       setCurrentSet((prev) => prev + 1);
@@ -94,13 +109,44 @@ const TimerCircle = ({ duration = 10 }) => {
       setCurrentSet(1); // reset sets
       setTimeLeft(duration);
     } else {
-      setTimeLeft(0); // workout done
+      setTimeLeft(0);
     }
+
+    handleWorkoutComplete();
   };
+
+  const handleWorkoutComplete = async () => {
+    const today = new Date().toISOString().split("T")[0];
+
+    const finalProgress = [...progress];
+
+    const dataToSave = {
+      date: today,
+      workoutTitle: workout.title,
+      completed: true,
+      exercises: finalProgress,
+    };
+
+    await saveWorkout(user.uid, dataToSave);
+  };
+
+  useEffect(() => {
+    if (!workout?.exercises) return;
+
+    setProgress(
+      workout.exercises.map((ex) => ({
+        name: ex.name,
+        sets: ex.sets,
+        reps: ex.reps,
+        completedSets: 0,
+      })),
+    );
+  }, [workout]);
+
   return (
     <div className="flex flex-col items-center justify-center gap-8">
-      <div className="absolute top-1 p-4">
-        <svg className="w-full h-2">
+      <div className="absolute top-20 p-4 w-4/5">
+        <svg className="w-full h-1">
           <rect
             x="0"
             y="0"
@@ -121,7 +167,7 @@ const TimerCircle = ({ duration = 10 }) => {
       </div>
       <div className="flex flex-col items-center justify-center gap-8">
         <div className="  text-center px-2">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold">
+          <h1 className="text-3xl sm:text-2xl md:text-3xl">
             {currentExercise.name}
           </h1>
           <p className="text-sm sm:text-base text-gray-400">
@@ -135,7 +181,7 @@ const TimerCircle = ({ duration = 10 }) => {
           {/* SVG Circle */}
           <svg
             viewBox="0 0 500 500"
-            className="w-64 h-64 sm:w-80 sm:h-80 md:w-400px md:h-400px -rotate-90"
+            className="w-84 h-84 sm:w-80 sm:h-80 md:w-400px md:h-400px -rotate-90"
           >
             <circle
               cx="250"
@@ -155,44 +201,48 @@ const TimerCircle = ({ duration = 10 }) => {
               strokeWidth="8"
               fill="transparent"
               strokeDasharray={circumference}
-              strokeDashoffset={progress}
+              strokeDashoffset={timeProgress}
               strokeLinecap="round"
               className="transition-all duration-100 linear"
             />
           </svg>
 
           {/* Time */}
-          <div className="absolute inset-0 flex items-center justify-center text-white text-3xl sm:text-5xl md:text-6xl font-bold">
+          <div className="absolute inset-0 flex items-center justify-center text-white text-5xl sm:text-5xl md:text-6xl font-bold">
             {formatTime(timeLeft)}
           </div>
 
           {/* REST label */}
-          {isRunning && (
-            <div className="absolute bottom-6 sm:bottom-10 text-[#22C55E] text-sm sm:text-lg font-medium">
+          {isRunning ? (
+            <div className="absolute bottom-20 sm:bottom-20 text-[#22C55E] text-xl sm:text-xl font-medium">
               REST
+            </div>
+          ) : (
+            <div className="absolute bottom-20 sm:bottom-20 text-[#22C55E] text-xl sm:text-xl font-medium">
+              START
             </div>
           )}
         </div>
 
         {/* Controls */}
-        <div className="w-full flex justify-center mt-8">
+        <div className="w-full flex justify-center">
           <button
             onClick={toggleTimer}
-            className="text-2xl sm:text-3xl p-5 sm:p-8 rounded-full bg-[#22C55E] flex items-center justify-center"
+            className="text-3xl sm:text-3xl p-8 sm:p-8 rounded-full bg-[#22C55E] flex items-center justify-center"
           >
             {isRunning ? <FaPause /> : <FaPlay />}
           </button>
         </div>
 
         {/* Footer info */}
-        <div className="flex flex-col items-center justify-center text-center w-full pt-6 text-sm sm:text-base">
+        <div className="flex flex-col items-center justify-center text-center w-full text-sm sm:text-base">
           Exercise {currentIndex + 1} of {totalExercises}
-          <button
+          {/* <button
             onClick={resetTimer}
             className="mt-2 text-green-400 underline"
           >
             Reset 🔄
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

@@ -58,11 +58,17 @@ const TodaysWorkoutCard = () => {
     router.push(`/workout/${userData.level}/${currentDay.type}`);
   };
 
+  const now = new Date();
+
+  const dayShort = now.toLocaleDateString("en-US", {
+    weekday: "long",
+  });
+
   return (
     <div className="p-4 rounded-xl bg-[#161A16] text-white w-full m-8 flex flex-col gap-4">
       <h1>Today's Workout • {capitalize(userData.level)} Program</h1>
       <h2 className="text-3xl">
-        {currentDay.day} - ({currentDay.title})
+        {dayShort} - ({currentDay.title})
       </h2>
 
       <div className="w-full">

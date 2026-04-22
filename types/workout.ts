@@ -11,3 +11,10 @@ export type WorkoutDay = {
   type: string;
   exercises: Exercise[];
 };
+
+export type Workout = {
+  name: string;
+  sets: number;
+  reps: number;
+  completedSets: number;
+};

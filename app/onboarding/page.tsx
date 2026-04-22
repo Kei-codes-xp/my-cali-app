@@ -16,8 +16,6 @@ export default function Onboarding() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log("onboarding auth:", user);
-
       if (user) {
         setUserId(user.uid);
       } else {

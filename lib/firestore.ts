@@ -1,4 +1,5 @@
 import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import app from "./firebase";
 
 const db = getFirestore(app);
@@ -24,4 +25,10 @@ export const addExercise = async (
     collection(db, "users", userId, "workouts", workoutId, "exercises"),
     exercise,
   );
+};
+
+export const saveWorkout = async (userId: string, data: any) => {
+  const id = `${userId}_${data.date}`;
+
+  await setDoc(doc(db, "workouts", id), data);
 };

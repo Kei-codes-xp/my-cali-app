@@ -1,4 +1,25 @@
-export function getTodayWorkout(plan: any[] = [], startDate?: string) {
+function getDateInTimeZone(timeZone: string) {
+  const now = new Date();
+
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now);
+
+  const year = parts.find((p) => p.type === "year")?.value;
+  const month = parts.find((p) => p.type === "month")?.value;
+  const day = parts.find((p) => p.type === "day")?.value;
+
+  return new Date(`${year}-${month}-${day}`);
+}
+
+export function getTodayWorkout(
+  plan: any[] = [],
+  startDate?: string,
+  timeZone = "Asia/Manila",
+) {
   if (!plan || plan.length === 0) {
     return { dayIndex: 0, workout: null };
   }
@@ -8,7 +29,11 @@ export function getTodayWorkout(plan: any[] = [], startDate?: string) {
   }
 
   const start = new Date(startDate);
-  const today = new Date();
+  const today = getDateInTimeZone(timeZone);
+
+  // 🔥 normalize both to midnight
+  start.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
 
   const diffTime = today.getTime() - start.getTime();
 
