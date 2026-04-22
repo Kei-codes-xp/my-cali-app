@@ -55,6 +55,9 @@ export default function Onboarding() {
       <h1>Choose Your Level</h1>
 
       <button onClick={() => selectLevel("beginner")}>Beginner</button>
+      <button onClick={() => selectLevel("progressive_beginner")}>
+        Progressive Beginner
+      </button>
       <button onClick={() => selectLevel("intermediate")}>Intermediate</button>
       <button onClick={() => selectLevel("advanced")}>Advanced</button>
     </div>
