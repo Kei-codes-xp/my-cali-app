@@ -59,6 +59,56 @@ export const plans: Record<string, WorkoutDay[]> = {
     },
   ],
 
+  progressive_beginner: [
+    {
+      day: "Monday",
+      title: "Push Strength",
+      type: "push",
+      exercises: [
+        { name: "Standard Push-ups", sets: 4, reps: 15 },
+        { name: "Decline Push-ups", sets: 4, reps: 12 },
+        { name: "Diamond Push-ups", sets: 3, reps: 10 },
+        { name: "Dips (chair or bars)", sets: 4, reps: 10 },
+        { name: "Pseudo Planche Lean", sets: 3, reps: 20 },
+      ],
+    },
+    { day: "Tuesday", title: "Active Rest", type: "rest", exercises: [] },
+    {
+      day: "Wednesday",
+      title: "Pull Strength",
+      type: "pull",
+      exercises: [
+        { name: "Pull-ups", sets: 4, reps: 10 },
+        { name: "Chin-ups", sets: 4, reps: 8 },
+        { name: "Australian Rows", sets: 4, reps: 12 },
+        { name: "Negative Pull-ups", sets: 3, reps: 6 },
+      ],
+    },
+    { day: "Thursday", title: "Rest", type: "rest", exercises: [] },
+    {
+      day: "Friday",
+      title: "Legs",
+      type: "legs",
+      exercises: [
+        { name: "Pistol Squat Progression", sets: 3, reps: 6 },
+        { name: "Jump Squats", sets: 4, reps: 12 },
+        { name: "Bulgarian Split Squats", sets: 3, reps: 10 },
+        { name: "Calf Raises", sets: 4, reps: 20 },
+      ],
+    },
+    { day: "Saturday", title: "Conditioning", type: "cardio", exercises: [] },
+    {
+      day: "Sunday",
+      title: "Core + Mobility",
+      type: "cardio",
+      exercises: [
+        { name: "Plank", sets: 3, reps: 60 },
+        { name: "Leg Raises", sets: 3, reps: 12 },
+        { name: "Hollow Body Hold", sets: 3, reps: 30 },
+      ],
+    },
+  ],
+
   intermediate: [
     {
       day: "Monday",
